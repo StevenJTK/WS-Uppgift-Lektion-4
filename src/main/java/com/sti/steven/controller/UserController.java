@@ -1,7 +1,7 @@
 package com.sti.steven.controller;
 
 import com.sti.steven.model.CustomUser;
-import org.apache.catalina.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -27,22 +27,42 @@ public class UserController {
         return userList;
     }
 
+    @GetMapping("/ok")
+    public ResponseEntity<String> fetchOk() {
+        return ResponseEntity.ok("This is a test");
+    }
+
+    @GetMapping("/br")
+    public ResponseEntity<String> fetchBadRequest() {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/ise")
+    public ResponseEntity<String> fetchInternalError() {
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @GetMapping("/nf")
+    public ResponseEntity<String> fetchNotFound() {
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/users/id")
-    public CustomUser getUser(@PathVariable("id") String id) {
+    public ResponseEntity<Object> getUser(@PathVariable("id") String id) {
         System.out.println(userList.get(Integer.parseInt(id)));
 
         for (CustomUser user: userList) {
             if (user.id() == Integer.parseInt(id)) {
                 System.out.println(user);
+                return ResponseEntity.ok(user);
 
-                return user;
             }
         }
-        return null;
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{username}")
-    public CustomUser deleteUser(@PathVariable("username") String username) {
+    public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
 
         CustomUser customUserToBeDeleted;
 
@@ -51,10 +71,10 @@ public class UserController {
                 customUserToBeDeleted = userList.get(i);
                 userList.remove(customUserToBeDeleted);
 
-                return customUserToBeDeleted;
+                return ResponseEntity.ok(customUserToBeDeleted);
             }
         }
     
-        return null;
+        return ResponseEntity.notFound().build();
     }
 }
